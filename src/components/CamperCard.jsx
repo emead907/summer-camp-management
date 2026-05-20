@@ -1,4 +1,8 @@
+
+import { Link } from 'react-router-dom';
+
 export default function CamperCard({
+    id,
     initials,
     name,
     age,
@@ -6,40 +10,45 @@ export default function CamperCard({
     allergies,
   }) {
     return (
-      <div style={styles.card}>
-        
-        <div style={styles.left}>
-          
-          <div style={styles.avatar}>
-            {initials}
-          </div>
-  
-          <div>
-            <h3 style={styles.name}>{name}</h3>
-  
-            <div style={styles.details}>
-              <span>Age {age}</span>
-  
-              <span style={styles.sessionTag}>
-                {session}
-              </span>
-  
-              {allergies && (
-                <span style={styles.allergyTag}>
-                  • {allergies}
-                </span>
-              )}
+        <Link
+          to={`/campers/${id}`}
+          style={{ textDecoration: 'none' }}
+        >
+          <div style={styles.card}>
+            
+            <div style={styles.left}>
+              
+              <div style={styles.avatar}>
+                {initials}
+              </div>
+      
+              <div>
+                <h3 style={styles.name}>{name}</h3>
+      
+                <div style={styles.details}>
+                  <span>Age {age}</span>
+      
+                  <span style={styles.sessionTag}>
+                    {session}
+                  </span>
+      
+                  {allergies && (
+                    <span style={styles.allergyTag}>
+                      • {allergies}
+                    </span>
+                  )}
+                </div>
+              </div>
+      
             </div>
+      
+            <div style={styles.arrow}>
+              ›
+            </div>
+      
           </div>
-  
-        </div>
-  
-        <div style={styles.arrow}>
-          ›
-        </div>
-  
-      </div>
-    );
+        </Link>
+      );
   }
   
   const styles = {

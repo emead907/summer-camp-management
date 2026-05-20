@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import MainLayout from './layout/MainLayout';
-
+import CamperDetails from './pages/CamperDetails';
 import Dashboard from './pages/Dashboard';
 import Campers from './pages/Campers';
 import Attendance from './pages/Attendance';
@@ -19,6 +19,7 @@ function App() {
           <Route path="schedule" element={<Schedule />} />
           <Route path="staff" element={<Staff />} />
           <Route path="admin" element={<Admin />} />
+          <Route path="campers/:id" element={<CamperDetails />} />
         </Route>
       </Routes>
     </BrowserRouter>
