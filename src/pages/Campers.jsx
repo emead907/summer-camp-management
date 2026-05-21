@@ -1,44 +1,41 @@
-import { useState } from 'react';
-import CamperCard from '../components/CamperCard';
 
-const initialCampers = [
-  {
-    id: 1,
-    initials: 'SW',
-    name: 'Sarah Williams',
-    age: 12,
-    session: 'Full Day',
-    allergies: 'Peanuts',
-  },
-  {
-    id: 2,
-    initials: 'MC',
-    name: 'Michael Chen',
-    age: 10,
-    session: 'Full Day',
-    allergies: '',
-  },
-  {
-    id: 3,
-    initials: 'ET',
-    name: 'Emma Thompson',
-    age: 11,
-    session: 'AM Only',
-    allergies: 'Dairy, Shellfish',
-  },
-  {
-    id: 4,
-    initials: 'JR',
-    name: 'James Rodriguez',
-    age: 13,
-    session: 'Full Day',
-    allergies: '',
-  },
-];
+import CamperCard from '../components/CamperCard';
+import { useEffect, useState } from 'react';
+import { supabase } from '../services/supabaseClient';
+
+
 
 export default function Campers() {
 
-  const [campers, setCampers] = useState(initialCampers);
+const [campers, setCampers] = useState([]);
+useEffect(() => {
+  fetchCampers();
+}, []);
+
+async function fetchCampers() {
+  const { data, error } = await supabase
+    .from('campers')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  const formattedCampers = data.map((camper) => ({
+    ...camper,
+    initials: camper.name
+      .split(' ')
+      .map((part) => part[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2),
+  }));
+
+  setCampers(formattedCampers);
+}
+
 const [showModal, setShowModal] = useState(false);
 
   const [newCamper, setNewCamper] = useState({
@@ -157,26 +154,26 @@ const filteredCampers = campers.filter((camper) => {
     </div>
     
   );
-  function handleAddCamper(event) {
+  async function handleAddCamper(event) {
     event.preventDefault();
   
-    const nameParts = newCamper.name.trim().split(' ');
-    const initials = nameParts
-      .map((part) => part[0])
-      .join('')
-      .toUpperCase()
-      .slice(0, 2);
+    const { error } = await supabase
+      .from('campers')
+      .insert([
+        {
+          name: newCamper.name,
+          age: Number(newCamper.age),
+          session: newCamper.session,
+          allergies: newCamper.allergies,
+        },
+      ]);
   
-    const camperToAdd = {
-      id: Date.now(),
-      initials,
-      name: newCamper.name,
-      age: Number(newCamper.age),
-      session: newCamper.session,
-      allergies: newCamper.allergies,
-    };
+    if (error) {
+      console.error(error);
+      return;
+    }
   
-    setCampers([...campers, camperToAdd]);
+    await fetchCampers();
   
     setNewCamper({
       name: '',

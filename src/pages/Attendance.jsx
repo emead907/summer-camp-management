@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import StatusBadge from '../components/StatusBadge';
 
 const initialAttendance = [
   {
@@ -208,6 +209,7 @@ const filteredAttendance =
                 {camper.name}{' '}
                 <span style={styles.sessionTag}>{camper.session}</span>
               </h3>
+
 
               {camper.allergies && (
                 <p style={styles.allergy}>⚠ {camper.allergies}</p>
